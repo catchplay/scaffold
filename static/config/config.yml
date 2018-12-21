@@ -1,0 +1,13 @@
+http:
+  listenAddr: ":8080"
+
+release:
+  releaseVersion: "@RELEASE_VERSION@"
+  releaseTime: "@RELEASE_TIME@"
+
+
+database:
+  url: test:test@tcp(localhost:3306)/test?charset=utf8&parseTime=true
+  maxIdle: 50
+  maxActive: 100
+  logMode: true

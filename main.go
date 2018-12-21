@@ -1,10 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
-	"github.com/catchplay/go-scaffold/scaffold"
+	"github.com/catchplay/scaffold/scaffold"
 
 	"github.com/urfave/cli"
 )
@@ -20,6 +21,12 @@ func main() {
 			Usage:   " Generate scaffold project layout",
 			Action: func(c *cli.Context) error {
 				scfd := scaffold.New()
+
+				err := scfd.Generate()
+				if err != nil {
+					fmt.Printf("%+v\n", err)
+				}
+
 				return scfd.Generate()
 			},
 		},
