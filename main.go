@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -20,14 +19,10 @@ func main() {
 			Aliases: []string{"i"},
 			Usage:   " Generate scaffold project layout",
 			Action: func(c *cli.Context) error {
-				scfd := scaffold.New()
-
-				err := scfd.Generate()
-				if err != nil {
-					fmt.Printf("%+v\n", err)
-				}
-
-				return scfd.Generate()
+				// if err != nil {
+				// 	fmt.Printf("%+v\n", err)
+				// }
+				return scaffold.New().Generate()
 			},
 		},
 	}
