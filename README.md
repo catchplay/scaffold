@@ -5,9 +5,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/catchplay/scaffold)](https://goreportcard.com/report/github.com/catchplay/scaffold)
 [![GoDoc](https://godoc.org/github.com/catchplay/scaffold?status.svg)](https://godoc.org/github.com/catchplay/scaffold)
 
-scaffold generates standard starter Go project layout at CATCHPLAY.
-
-Starter Go project layout as bellow:
+Scaffold generates starter Go project layout at CATCHPLAY. Project ayout as bellow:
 
 ```
 ├── cmd
@@ -20,9 +18,40 @@ Starter Go project layout as bellow:
 │   └── release.go
 ├── model
 │   └── model.go
-├── subtitle
 └── web
     ├── routes.go
     ├── server.go
     └── version.go
+```
+
+## Installation
+
+ Download scaffold by using:
+```sh
+$ go get -u github.com/catchplay/scaffold
+```
+
+## Create a new project
+
+1. Going to your new project folder:
+```sh
+$ cd $GOPATH/src/$YOUR_PROJECT
+```
+
+2. Run `scaffold init` in the new project folder:
+
+```sh
+$ scaffold init
+```
+
+3. That will generate a whole new starter project files:
+
+```
+
+```
+
+4. And you can the new project by busing:
+```
+sh
+$ make run 
 ```
