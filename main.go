@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/catchplay/scaffold/scaffold"
-
 	"github.com/urfave/cli"
 )
 
@@ -19,10 +19,13 @@ func main() {
 			Aliases: []string{"i"},
 			Usage:   " Generate scaffold project layout",
 			Action: func(c *cli.Context) error {
-				// if err != nil {
-				// 	fmt.Printf("%+v\n", err)
-				// }
-				return scaffold.New().Generate()
+				err := scaffold.New().Generate()
+				//fmt.Printf("error:%+v\n", err)
+				if err == nil {
+					fmt.Println("Success Created. Please excute `make up` to start service.")
+				}
+
+				return err
 			},
 		},
 	}

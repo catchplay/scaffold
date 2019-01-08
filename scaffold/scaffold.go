@@ -1,6 +1,7 @@
 package scaffold
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -75,7 +76,9 @@ type templateSet struct {
 
 func getTemplateSets() []templateSet {
 	tt := templateEngine{}
-	filepath.Walk(filepath.Join(Gopath, GoScaffoldPath), tt.visit)
+	templatesFolder := filepath.Join(Gopath, GoScaffoldPath, "template/")
+	//fmt.Printf("walk:%s\n", templatesFolder)
+	filepath.Walk(templatesFolder, tt.visit)
 	return tt.Templates
 }
 
@@ -98,22 +101,24 @@ func tmplExec(tmplSet templateSet, data interface{}) error {
 		pkgErr.WithStack(err)
 	}
 
-	path := filepath.Dir(tmplSet.genFilePath)
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.MkdirAll(path, os.ModePerm)
+	relateDir := filepath.Dir(tmplSet.genFilePath)
+	if _, err := os.Stat(relateDir); os.IsNotExist(err) {
+		os.MkdirAll(relateDir, os.ModePerm)
 	}
 	if err != nil {
 		pkgErr.WithStack(err)
 	}
 
-	distFilePath := filepath.Join(path, filepath.Base(tmplSet.genFilePath))
+	//fmt.Printf("relateDir:%s\n", relateDir)
+	distFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
+	//fmt.Printf("distFilePath:%s\n", distFilePath)
 	dist, err := os.Create(distFilePath)
 	if err != nil {
 		return pkgErr.WithStack(err)
 	}
 	defer dist.Close()
 
-	log.Printf("Genarate go file to %s\n", distFilePath)
+	fmt.Printf("Create %s\n", distFilePath)
 	return tmpl.Execute(dist, data)
 }
 
@@ -139,6 +144,31 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 
 		templEngine.Templates = append(templEngine.Templates, templ)
 
+	} else if mode := f.Mode(); mode.IsRegular() {
+		//TODO:
+		templateFileName := filepath.Base(path)
+		//fmt.Printf("templateFileName:%s\n", templateFileName)
+
+		basepath := filepath.Join(Gopath, GoScaffoldPath, "template")
+		targpath := filepath.Join(filepath.Dir(path), templateFileName)
+
+		//fmt.Printf("basepath:%s\n", basepath)
+		//fmt.Printf("targpath:%s\n", targpath)
+
+		genFileBasePath, err := filepath.Rel(basepath, targpath)
+		if err != nil {
+			return pkgErr.WithStack(err)
+		}
+
+		//fmt.Printf("genFileBasePath:%s\n", genFileBasePath)
+
+		templ := templateSet{
+			templateFilePath: path,
+			templateFileName: templateFileName,
+			genFilePath:      filepath.Join(templEngine.currDir, genFileBasePath),
+		}
+
+		templEngine.Templates = append(templEngine.Templates, templ)
 	}
 
 	return nil
@@ -153,12 +183,12 @@ func genFormStaticFle(d data) error {
 			}
 			defer src.Close()
 
-			sf, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "static"), path)
+			distFilePath, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "static"), path)
 			if err != nil {
 				return pkgErr.WithStack(err)
 			}
-
-			distFilePath := filepath.Join(Gopath, "src", d.ProjectPath, sf)
+			//fmt.Printf("sf:%s\n", sf)
+			//	distFilePath := filepath.Join(Gopath, "src", d.ProjectPath, sf)
 			if err := os.MkdirAll(filepath.Dir(distFilePath), os.ModePerm); err != nil {
 				return pkgErr.WithStack(err)
 			}
@@ -173,7 +203,7 @@ func genFormStaticFle(d data) error {
 				return pkgErr.WithStack(err)
 			}
 
-			log.Printf("Genarate static file to %s \n", distFilePath)
+			log.Printf("Create static file to %s \n", distFilePath)
 		}
 
 		return nil
