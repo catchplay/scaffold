@@ -5,7 +5,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/catchplay/scaffold)](https://goreportcard.com/report/github.com/catchplay/scaffold)
 [![GoDoc](https://godoc.org/github.com/catchplay/scaffold?status.svg)](https://godoc.org/github.com/catchplay/scaffold)
 
-Scaffold generates starter Go project layout at CATCHPLAY. Project ayout as bellow:
+Scaffold generates starter Go project layout. Let you can focus on  buesiness logic implemeted. 
+
+The following is Go project layout scaffold generated:
 
 ```
 ├── cmd
@@ -35,7 +37,7 @@ $ go get -u github.com/catchplay/scaffold
 
 1. Going to your new project folder:
 ```sh
-$ cd $GOPATH/src/$YOUR_PROJECT
+$ cd $GOPATH/src/$USER_NAME/$YOUR_PROJECT
 ```
 
 2. Run `scaffold init` in the new project folder:
@@ -54,4 +56,4 @@ $ scaffold init
 ```
 sh
 $ make run 
-```
+```｀
