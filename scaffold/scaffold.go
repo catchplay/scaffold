@@ -41,9 +41,10 @@ func (*scaffold) Generate(path string) error {
 	goProjectPath := strings.TrimPrefix(genAbsDir, filepath.Join(Gopath, "src")+string(os.PathSeparator))
 
 	d := data{
-		ProjectPath: goProjectPath,
-		ProjectName: projectName,
-		Quit:        "<-quit",
+		AbsGenProjectPath: genAbsDir,
+		ProjectPath:       goProjectPath,
+		ProjectName:       projectName,
+		Quit:              "<-quit",
 	}
 
 	if err := genFromTemplate(getTemplateSets(), d); err != nil {
@@ -57,9 +58,10 @@ func (*scaffold) Generate(path string) error {
 }
 
 type data struct {
-	ProjectPath string //The relative path of the generated file (eg:github.com/catchplay/foo)
-	ProjectName string //The current directory name of the generated file //TODO:seems like don't needs
-	Quit        string
+	AbsGenProjectPath string
+	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
+	ProjectName       string //The project name which want to generated
+	Quit              string
 }
 
 type templateEngine struct {
@@ -182,17 +184,19 @@ func genFormStaticFle(d data) error {
 			}
 			defer src.Close()
 
-			distFilePath, err := filepath.Rel(filepath.Join(Gopath, GoScaffoldPath, "static"), path)
+			basepath := filepath.Join(Gopath, GoScaffoldPath, "static")
+			distRelFilePath, err := filepath.Rel(basepath, path)
 			if err != nil {
 				return pkgErr.WithStack(err)
 			}
-			//fmt.Printf("sf:%s\n", sf)
-			//	distFilePath := filepath.Join(Gopath, "src", d.ProjectPath, sf)
-			if err := os.MkdirAll(filepath.Dir(distFilePath), os.ModePerm); err != nil {
+
+			distAbsFilePath := filepath.Join(d.AbsGenProjectPath, distRelFilePath)
+
+			if err := os.MkdirAll(filepath.Dir(distAbsFilePath), os.ModePerm); err != nil {
 				return pkgErr.WithStack(err)
 			}
 
-			dist, err := os.Create(distFilePath)
+			dist, err := os.Create(distAbsFilePath)
 			if err != nil {
 				return pkgErr.WithStack(err)
 			}
@@ -202,11 +206,12 @@ func genFormStaticFle(d data) error {
 				return pkgErr.WithStack(err)
 			}
 
-			fmt.Printf("Create %s \n", distFilePath)
+			fmt.Printf("Create %s \n", distRelFilePath)
 		}
 
 		return nil
 	}
 
-	return filepath.Walk(filepath.Join(Gopath, GoScaffoldPath, "static"), walkerFuc)
+	walkPath := filepath.Join(Gopath, GoScaffoldPath, "static")
+	return filepath.Walk(walkPath, walkerFuc)
 }

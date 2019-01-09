@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/catchplay/scaffold/scaffold"
 	"github.com/urfave/cli"
@@ -19,7 +20,12 @@ func main() {
 			Aliases: []string{"i"},
 			Usage:   " Generate scaffold project layout",
 			Action: func(c *cli.Context) error {
-				err := scaffold.New().Generate()
+				currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+				if err != nil {
+					return err
+				}
+
+				err = scaffold.New().Generate(currDir)
 				//fmt.Printf("error:%+v\n", err)
 				if err == nil {
 					fmt.Println("Success Created. Please excute `make up` to start service.")
