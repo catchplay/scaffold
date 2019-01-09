@@ -25,7 +25,7 @@ func main() {
 					return err
 				}
 
-				err = scaffold.New().Generate(currDir)
+				err = scaffold.New(false).Generate(currDir)
 				//fmt.Printf("error:%+v\n", err)
 				if err == nil {
 					fmt.Println("Success Created. Please excute `make up` to start service.")

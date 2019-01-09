@@ -17,7 +17,7 @@ func TestScaffold(t *testing.T) {
 		assert.NoError(t, err)
 	}
 
-	assert.NoError(t, New().Generate(tempDir))
+	assert.NoError(t, New(true).Generate(tempDir))
 
 	//defer os.RemoveAll(tempDir) // clean up
 }

@@ -25,13 +25,14 @@ func init() {
 var Gopath string
 
 type scaffold struct {
+	debug bool
 }
 
-func New() *scaffold {
-	return &scaffold{}
+func New(debug bool) *scaffold {
+	return &scaffold{debug: debug}
 }
 
-func (*scaffold) Generate(path string) error {
+func (s *scaffold) Generate(path string) error {
 	genAbsDir, err := filepath.Abs(path)
 	if err != nil {
 		return err
@@ -47,11 +48,11 @@ func (*scaffold) Generate(path string) error {
 		Quit:              "<-quit",
 	}
 
-	if err := genFromTemplate(getTemplateSets(), d); err != nil {
+	if err := s.genFromTemplate(getTemplateSets(), d); err != nil {
 		return err
 	}
 
-	if err := genFormStaticFle(d); err != nil {
+	if err := s.genFormStaticFle(d); err != nil {
 		return err
 	}
 	return nil
@@ -83,9 +84,9 @@ func getTemplateSets() []templateSet {
 	return tt.Templates
 }
 
-func genFromTemplate(templateSets []templateSet, data interface{}) error {
+func (s *scaffold) genFromTemplate(templateSets []templateSet, data interface{}) error {
 	for _, tmpl := range templateSets {
-		if err := tmplExec(tmpl, data); err != nil {
+		if err := s.tmplExec(tmpl, data); err != nil {
 			return err
 		}
 	}
@@ -94,7 +95,7 @@ func genFromTemplate(templateSets []templateSet, data interface{}) error {
 
 func unescaped(x string) interface{} { return template.HTML(x) }
 
-func tmplExec(tmplSet templateSet, data interface{}) error {
+func (s *scaffold) tmplExec(tmplSet templateSet, data interface{}) error {
 	tmpl := template.New(tmplSet.templateFileName)
 	tmpl = tmpl.Funcs(template.FuncMap{"unescaped": unescaped})
 	tmpl, err := tmpl.ParseFiles(tmplSet.templateFilePath)
@@ -110,9 +111,9 @@ func tmplExec(tmplSet templateSet, data interface{}) error {
 		pkgErr.WithStack(err)
 	}
 
-	fmt.Printf("relateDir:%s\n", relateDir)
+	s.debugPrintf("relateDir:%s\n", relateDir)
 	distRelFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
-	fmt.Printf("distRelFilePath:%s\n", distRelFilePath)
+	s.debugPrintf("distRelFilePath:%s\n", distRelFilePath)
 	dist, err := os.Create(distRelFilePath)
 	if err != nil {
 		return pkgErr.WithStack(err)
@@ -167,7 +168,7 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 	return nil
 }
 
-func genFormStaticFle(d data) error {
+func (s *scaffold) genFormStaticFle(d data) error {
 	walkerFuc := func(path string, f os.FileInfo, err error) error {
 		if f.Mode().IsRegular() == true {
 			src, err := os.Open(path)
@@ -206,4 +207,8 @@ func genFormStaticFle(d data) error {
 
 	walkPath := filepath.Join(Gopath, GoScaffoldPath, "static")
 	return filepath.Walk(walkPath, walkerFuc)
+}
+
+func (s *scaffold) debugPrintf(format string, a ...interface{}) {
+	fmt.Printf(format, a...)
 }
