@@ -7,9 +7,14 @@
 
 Scaffold generates starter Go project layout. Let you can focus on  buesiness logic implemeted. 
 
+[![asciicast](https://asciinema.org/a/ecFsGKUyFkPtJ4vZqwvJBmDw9.svg?autoplay=1)](https://asciinema.org/a/ecFsGKUyFkPtJ4vZqwvJBmDw9?autoplay=1)
+
 The following is Go project layout scaffold generated:
 
 ```
+├── Dockerfile
+├── Makefile
+├── README.md
 ├── cmd
 │   └── main.go
 ├── config
@@ -18,6 +23,7 @@ The following is Go project layout scaffold generated:
 │   ├── database.go
 │   ├── http.go
 │   └── release.go
+├── docker-compose.yml
 ├── model
 │   └── model.go
 └── web
@@ -37,7 +43,8 @@ $ go get -u github.com/catchplay/scaffold
 
 1. Going to your new project folder:
 ```sh
-$ cd $GOPATH/src/$USER_NAME/$YOUR_PROJECT
+# change to project directory
+$ cd $GOPATH/src/path/to/project
 ```
 
 2. Run `scaffold init` in the new project folder:
@@ -46,14 +53,33 @@ $ cd $GOPATH/src/$USER_NAME/$YOUR_PROJECT
 $ scaffold init
 ```
 
-3. That will generate a whole new starter project files:
+3. That will generate a whole new starter project files like:
+
+```
+Create Dockerfile
+Create README.md
+Create cmd/main.go
+Create config/config.go
+Create config/database.go
+Create config/http.go
+Create config/release.go
+Create docker-compose.yml
+Create model/model.go
+Create web/routes.go
+Create web/server.go
+Create web/version.go
+Create Makefile
+Create config/config.yml
+Success Created. Please excute `make up` to start service.
 
 ```
 
-```
-
-4. And you can the new project by busing:
-```
-sh
+4. And you can run the new project by busing:
+```sh
 $ make run 
 ```｀
+
+
+```
+
+```
