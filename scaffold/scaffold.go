@@ -58,7 +58,7 @@ func (*scaffold) Generate(path string) error {
 }
 
 type data struct {
-	AbsGenProjectPath string
+	AbsGenProjectPath string // The Abs Gen Project Path
 	ProjectPath       string //The Go import project path (eg:github.com/fooOrg/foo)
 	ProjectName       string //The project name which want to generated
 	Quit              string
@@ -110,16 +110,16 @@ func tmplExec(tmplSet templateSet, data interface{}) error {
 		pkgErr.WithStack(err)
 	}
 
-	//fmt.Printf("relateDir:%s\n", relateDir)
-	distFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
-	//fmt.Printf("distFilePath:%s\n", distFilePath)
-	dist, err := os.Create(distFilePath)
+	fmt.Printf("relateDir:%s\n", relateDir)
+	distRelFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
+	fmt.Printf("distRelFilePath:%s\n", distRelFilePath)
+	dist, err := os.Create(distRelFilePath)
 	if err != nil {
 		return pkgErr.WithStack(err)
 	}
 	defer dist.Close()
 
-	fmt.Printf("Create %s\n", distFilePath)
+	fmt.Printf("Create %s\n", distRelFilePath)
 	return tmpl.Execute(dist, data)
 }
 
@@ -146,22 +146,14 @@ func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) 
 		templEngine.Templates = append(templEngine.Templates, templ)
 
 	} else if mode := f.Mode(); mode.IsRegular() {
-		//TODO:
 		templateFileName := filepath.Base(path)
-		//fmt.Printf("templateFileName:%s\n", templateFileName)
 
 		basepath := filepath.Join(Gopath, GoScaffoldPath, "template")
 		targpath := filepath.Join(filepath.Dir(path), templateFileName)
-
-		//fmt.Printf("basepath:%s\n", basepath)
-		//fmt.Printf("targpath:%s\n", targpath)
-
 		genFileBasePath, err := filepath.Rel(basepath, targpath)
 		if err != nil {
 			return pkgErr.WithStack(err)
 		}
-
-		//fmt.Printf("genFileBasePath:%s\n", genFileBasePath)
 
 		templ := templateSet{
 			templateFilePath: path,
