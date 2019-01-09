@@ -2,7 +2,6 @@ language: go
 sudo: false
 
 go:
-  - 1.9.x
   - 1.10.x
   - 1.11.x
   - master
@@ -11,7 +10,7 @@ before_install:
   - go get -t -v ./...
 
 script:
-  - go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -v ./... -race -coverprofile=coverage.txt
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
