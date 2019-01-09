@@ -7,7 +7,7 @@
 
 Scaffold generates starter Go project layout. Let you can focus on  buesiness logic implemeted. 
 
-[![asciicast](https://asciinema.org/a/ecFsGKUyFkPtJ4vZqwvJBmDw9.svg?autoplay=1)](https://asciinema.org/a/ecFsGKUyFkPtJ4vZqwvJBmDw9?autoplay=1)
+[![asciicast](https://asciinema.org/a/MA0ppdKfZSEl64cskUnqfsSiH.svg)](https://asciinema.org/a/MA0ppdKfZSEl64cskUnqfsSiH?autoplay=1&speed=2)
 
 The following is Go project layout scaffold generated:
 
@@ -78,8 +78,3 @@ Success Created. Please excute `make up` to start service.
 ```sh
 $ make run 
 ```｀
-
-
-```
-
-```
