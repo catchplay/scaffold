@@ -84,9 +84,9 @@ func getTemplateSets() []templateSet {
 	return tt.Templates
 }
 
-func (s *scaffold) genFromTemplate(templateSets []templateSet, data interface{}) error {
+func (s *scaffold) genFromTemplate(templateSets []templateSet, d data) error {
 	for _, tmpl := range templateSets {
-		if err := s.tmplExec(tmpl, data); err != nil {
+		if err := s.tmplExec(tmpl, d); err != nil {
 			return err
 		}
 	}
@@ -95,7 +95,7 @@ func (s *scaffold) genFromTemplate(templateSets []templateSet, data interface{})
 
 func unescaped(x string) interface{} { return template.HTML(x) }
 
-func (s *scaffold) tmplExec(tmplSet templateSet, data interface{}) error {
+func (s *scaffold) tmplExec(tmplSet templateSet, d data) error {
 	tmpl := template.New(tmplSet.templateFileName)
 	tmpl = tmpl.Funcs(template.FuncMap{"unescaped": unescaped})
 	tmpl, err := tmpl.ParseFiles(tmplSet.templateFilePath)
@@ -104,24 +104,25 @@ func (s *scaffold) tmplExec(tmplSet templateSet, data interface{}) error {
 	}
 
 	relateDir := filepath.Dir(tmplSet.genFilePath)
-	if _, err := os.Stat(relateDir); os.IsNotExist(err) {
-		os.MkdirAll(relateDir, os.ModePerm)
-	}
-	if err != nil {
-		pkgErr.WithStack(err)
+
+	distRelFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
+	distAbsFilePath := filepath.Join(d.AbsGenProjectPath, distRelFilePath)
+
+	s.debugPrintf("distRelFilePath:%s\n", distRelFilePath)
+	s.debugPrintf("distAbsFilePath:%s\n", distAbsFilePath)
+
+	if err := os.MkdirAll(filepath.Dir(distAbsFilePath), os.ModePerm); err != nil {
+		return pkgErr.WithStack(err)
 	}
 
-	s.debugPrintf("relateDir:%s\n", relateDir)
-	distRelFilePath := filepath.Join(relateDir, filepath.Base(tmplSet.genFilePath))
-	s.debugPrintf("distRelFilePath:%s\n", distRelFilePath)
-	dist, err := os.Create(distRelFilePath)
+	dist, err := os.Create(distAbsFilePath)
 	if err != nil {
 		return pkgErr.WithStack(err)
 	}
 	defer dist.Close()
 
 	fmt.Printf("Create %s\n", distRelFilePath)
-	return tmpl.Execute(dist, data)
+	return tmpl.Execute(dist, d)
 }
 
 func (templEngine *templateEngine) visit(path string, f os.FileInfo, err error) error {
