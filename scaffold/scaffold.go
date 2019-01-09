@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -203,7 +202,7 @@ func genFormStaticFle(d data) error {
 				return pkgErr.WithStack(err)
 			}
 
-			log.Printf("Create static file to %s \n", distFilePath)
+			fmt.Printf("Create %s \n", distFilePath)
 		}
 
 		return nil
