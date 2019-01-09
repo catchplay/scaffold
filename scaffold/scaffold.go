@@ -211,5 +211,7 @@ func (s *scaffold) genFormStaticFle(d data) error {
 }
 
 func (s *scaffold) debugPrintf(format string, a ...interface{}) {
-	fmt.Printf(format, a...)
+	if s.debug == true {
+		fmt.Printf(format, a...)
+	}
 }
