@@ -32,14 +32,14 @@ func New() *scaffold {
 	return &scaffold{}
 }
 
-func (*scaffold) Generate() error {
-	currDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+func (*scaffold) Generate(path string) error {
+	genAbsDir, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}
-
-	projectName := filepath.Base(currDir)
-	goProjectPath := strings.TrimPrefix(currDir, filepath.Join(Gopath, "src")+string(os.PathSeparator))
+	projectName := filepath.Base(genAbsDir)
+	//TODO: have to check path MUST be under the $GOPATH/src folder
+	goProjectPath := strings.TrimPrefix(genAbsDir, filepath.Join(Gopath, "src")+string(os.PathSeparator))
 
 	d := data{
 		ProjectPath: goProjectPath,
