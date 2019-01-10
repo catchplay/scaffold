@@ -4,11 +4,8 @@ sudo: false
 go:
   - 1.10.x
   - 1.11.x
-  - master
-
-before_install:
-  - go get -t -v ./...
-
+  - tip
+ 
 script:
   - go test -v ./... -race -coverprofile=coverage.txt
 
