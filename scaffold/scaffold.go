@@ -100,7 +100,7 @@ func (s *scaffold) tmplExec(tmplSet templateSet, d data) error {
 	tmpl = tmpl.Funcs(template.FuncMap{"unescaped": unescaped})
 	tmpl, err := tmpl.ParseFiles(tmplSet.templateFilePath)
 	if err != nil {
-		pkgErr.WithStack(err)
+		return pkgErr.WithStack(err)
 	}
 
 	relateDir := filepath.Dir(tmplSet.genFilePath)
